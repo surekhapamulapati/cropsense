@@ -9,7 +9,7 @@ LANG_DIR = os.path.join(os.path.dirname(__file__), 'translations')
 def load_language(lang):
     path = os.path.join(LANG_DIR, f"{lang}.json")
     if not os.path.exists(path):
-        path = os.path.join(LANG_DIR, "en.json") # Fallback to English
+        path = os.path.join(LANG_DIR, "en.json")  # Fallback to English
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
@@ -56,7 +56,6 @@ MARKET_PRICES = {
     }
 }
 
-
 # AI responses
 AI_RESPONSES = {
     'en': {
@@ -85,7 +84,6 @@ AI_RESPONSES = {
     }
 }
 
-
 @app.route('/')
 def home():
     lang = request.args.get('lang', 'en')
@@ -96,8 +94,20 @@ def home():
 def dashboard():
     lang = request.args.get('lang', 'en')
     content = load_language(lang)
-    return render_template('dashboard.html', content=content, lang=lang)
 
+    # Get Firebase config from environment variables
+    firebase_config = {
+        "apiKey": os.environ.get("FIREBASE_API_KEY"),
+        "authDomain": os.environ.get("FIREBASE_AUTH_DOMAIN"),
+        "databaseURL": os.environ.get("FIREBASE_DB_URL"),
+        "projectId": os.environ.get("FIREBASE_PROJECT_ID"),
+        "storageBucket": os.environ.get("FIREBASE_STORAGE_BUCKET"),
+        "messagingSenderId": os.environ.get("FIREBASE_MESSAGING_SENDER_ID"),
+        "appId": os.environ.get("FIREBASE_APP_ID"),
+        "measurementId": os.environ.get("FIREBASE_MEASUREMENT_ID")
+    }
+
+    return render_template('dashboard.html', content=content, lang=lang, firebase_config=firebase_config)
 
 # AI Query Route (general queries)
 @app.route('/api/ai_query', methods=['POST'])
@@ -105,15 +115,12 @@ def ai_query():
     data = request.json
     user_query = data.get('query', '').lower()
     lang = data.get('lang', 'en')
-    status = data.get('status', 'fresh').capitalize()  # Fresh / Moderate / Spoiled
+    status = data.get('status', 'fresh').capitalize()
 
     response = AI_RESPONSES[lang]['default']
 
-    # Greeting
     if any(greet in user_query for greet in ["hello", "hi", "hey"]):
         response = AI_RESPONSES[lang]['greeting']
-
-    # Freshness query
     elif "freshness" in user_query or "status" in user_query:
         if status == "Fresh":
             response = AI_RESPONSES[lang]['info_fresh']
@@ -121,31 +128,18 @@ def ai_query():
             response = AI_RESPONSES[lang]['info_moderate']
         elif status == "Spoiled":
             response = AI_RESPONSES[lang]['info_spoiled']
-        else:
-            response = AI_RESPONSES[lang]['default']
-
-    # Market prices query
     elif "market" in user_query or "price" in user_query:
-        prices = {}
         lines = []
         for crop, price_dict in MARKET_PRICES[lang].items():
             if crop == 'default':
                 continue
             price_for_status = price_dict.get(status.lower(), price_dict.get('fresh', 'N/A'))
-            prices[crop] = price_for_status
             lines.append(f"{crop.capitalize()} ({status}): {price_for_status}")
-
         response = f"{AI_RESPONSES[lang]['market_intro']} ({status}):\n" + "\n".join(lines)
-
-    # Other queries remain general
-    else:
-        # You can extend this to integrate a real AI model (e.g., GPT) for more intelligent responses
-        response = AI_RESPONSES[lang]['default']
 
     return jsonify({'response': response})
 
-
-# Market prices API (all crops)
+# Market prices API
 @app.route('/api/market_prices', methods=['POST'])
 def get_market_prices():
     data = request.json
@@ -163,9 +157,7 @@ def get_market_prices():
         response_lines.append(f"{crop.capitalize()} ({status.capitalize()}): {price_for_status}")
 
     response_text = f"{AI_RESPONSES[lang]['market_intro']} ({status.capitalize()}):\n" + "\n".join(response_lines)
-
     return jsonify({'prices': all_prices, 'response_text': response_text})
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

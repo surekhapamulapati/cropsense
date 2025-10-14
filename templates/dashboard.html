@@ -641,15 +641,15 @@
 
         // Firebase config
         const firebaseConfig = {
-            apiKey: "AIzaSyCsN59ibDB90COjjlknSIUninGTCd7T60c",
-            authDomain: "cropmonitor-f486a.firebaseapp.com",
-            databaseURL: "https://cropmonitor-f486a-default-rtdb.firebaseio.com",
-            projectId: "cropmonitor-f486a",
-            storageBucket: "cropmonitor-f486a.appspot.com",
-            messagingSenderId: "419152448371",
-            appId: "1:419152448371:web:b7f73290890bdc8c5ed306",
-            measurementId: "G-EQYNRBS1EF"
-        };
+    apiKey: "{{ firebase_config['apiKey'] }}",
+    authDomain: "{{ firebase_config['authDomain'] }}",
+    databaseURL: "{{ firebase_config['databaseURL'] }}",
+    projectId: "{{ firebase_config['projectId'] }}",
+    storageBucket: "{{ firebase_config['storageBucket'] }}",
+    messagingSenderId: "{{ firebase_config['messagingSenderId'] }}",
+    appId: "{{ firebase_config['appId'] }}",
+    measurementId: "{{ firebase_config['measurementId'] }}"
+};
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 

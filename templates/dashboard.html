@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ content['dashboard'] }} | CropSense</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #198754;
+            --primary-dark: #157347;
+            --primary-light: #20c997;
+            --accent: #ffc107;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gradient: linear-gradient(135deg, #198754 0%, #20c997 100%);
+            --gradient-dark: linear-gradient(135deg, #157347 0%, #198754 100%);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color:white;
+             /* Light green background */
+            color: var(--dark);
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background: var(--gradient-dark);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 8px;
+        }
+
+        .nav-link:hover {
+            color: var(--accent) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container.py-5 {
+            margin-top: 90px;
+        }
+
+        /* Dashboard Title */
+        h2.mb-4 {
+            font-weight: 700;
+            color: var(--primary-dark);
+            position: relative;
+            display: inline-block;
+        }
+
+        h2.mb-4:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        /* Section Headings (including Sensor Readings) */
+        h3.fw-bold {
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block; /* Make it inline-block to apply centering effects */
+        }
+
+        h3.fw-bold:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        /* Sensor Data Cards */
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            background: white;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+
+        .display-5 {
+            font-weight: 700;
+            margin-top: 15px !important;
+        }
+
+        /* Suggestion Cards */
+        .suggestion-card {
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            color: #fff;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .suggestion-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            transition: height 0.3s ease;
+            z-index: 1;
+        }
+
+        .suggestion-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+
+        .suggestion-card:hover:before {
+            height: 100%;
+        }
+
+        .suggestion-card h5 {
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .suggestion-card ul {
+            list-style-type: disc;
+            list-style-position: outside;
+            padding-left: 25px;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .suggestion-card li {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        /* Status-based backgrounds */
+        .suggestion-fresh {
+            background-color: #28a745;
+        }
+        .suggestion-fresh:before {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .suggestion-moderate {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .suggestion-moderate:before {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .suggestion-spoiled {
+            background-color: #dc3545;
+        }
+        .suggestion-spoiled:before {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .suggestion-none {
+            background-color: #6c757d;
+        }
+        .suggestion-none:before {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Market Cards */
+        .market-card {
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .market-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            transition: height 0.3s ease;
+        }
+
+        .market-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+
+        .market-card:hover:before {
+            height: 100%;
+        }
+
+        /* Lightened card backgrounds, same general color family */
+        .market-card.fresh {
+            background-color: #6ff67c;
+            color: #155724;
+        }
+        .market-card.fresh:before {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .market-card.moderate {
+            background-color: #f0e075;
+            color: #856404;
+        }
+        .market-card.moderate:before {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .market-card.spoiled {
+            background-color: #ea6666;
+            color: #721c24;
+        }
+        .market-card.spoiled:before {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Card text styling */
+        .market-card h5 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .market-card p {
+            font-size: 1.1rem;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* AI Chat Modal Styling */
+        #aiChatModal .modal-content {
+            border-radius: 16px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border: none;
+        }
+
+        #aiChatModal .modal-header {
+            border-bottom: none;
+            padding-bottom: 0;
+            background: var(--gradient);
+            color: white;
+            border-radius: 16px 16px 0 0;
+        }
+
+        #aiChatModal .modal-title {
+            font-weight: 600;
+        }
+
+        #aiChatModal .modal-body {
+            padding-top: 20px;
+        }
+
+        #aiChatWindow {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+        }
+
+        .user-message {
+            text-align: right;
+            margin-bottom: 15px;
+        }
+
+        .ai-message {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .message-bubble {
+            display: inline-block;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .user-message .message-bubble {
+            background-color: var(--primary);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .ai-message .message-bubble {
+            background-color: #e9ecef;
+            color: var(--dark);
+            border-bottom-left-radius: 5px;
+        }
+
+        #microphoneBtn {
+            font-size: 1.2rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        #microphoneBtn.active {
+            animation: pulse 1s infinite;
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+
+        /* Loading Animation */
+        .loading-dots {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+        .loading-dots div {
+            position: absolute;
+            top: 33px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation-timing-function: cubic-bezier(0, 1, 1, 0);
+        }
+        .loading-dots div:nth-child(1) {
+            left: 8px;
+            animation: loading-dots1 0.6s infinite;
+        }
+        .loading-dots div:nth-child(2) {
+            left: 8px;
+            animation: loading-dots2 0.6s infinite;
+        }
+        .loading-dots div:nth-child(3) {
+            left: 32px;
+            animation: loading-dots2 0.6s infinite;
+        }
+        .loading-dots div:nth-child(4) {
+            left: 56px;
+            animation: loading-dots3 0.6s infinite;
+        }
+        
+    /* ===== Footer ===== */
+    footer {
+      background: var(--gradient-dark);
+      color: #ffffff;
+      padding: 50px 20px 30px;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .social-icons a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .social-icons a:hover {
+      background: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .copyright {
+      font-size: 1rem;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+
+        @keyframes loading-dots1 {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+        @keyframes loading-dots3 {
+            0% { transform: scale(1); }
+            100% { transform: scale(0); }
+        }
+        @keyframes loading-dots2 {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(24px, 0); }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .container.py-5 {
+                margin-top: 80px;
+            }
+
+            .card, .suggestion-card, .market-card {
+                margin-bottom: 20px;
+            }
+
+            h2.mb-4 {
+                font-size: 1.8rem;
+            }
+
+            h3.fw-bold {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{{ url_for('home', lang=lang) }}">🌾CropSense</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item mx-2">
+                        <a class="nav-link text-white" href="{{ url_for('home', lang=lang) }}">{{ content['home'] }}</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#aiChatModal">
+                            <i class="bi bi-robot me-1"></i> {{ content['ask_ai'] }}
+                        </button>
+                    </li>
+                    <li class="nav-item dropdown mx-2">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-translate me-1"></i> {{ content['language'] }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="?lang=en">English</a></li>
+                            <li><a class="dropdown-item" href="?lang=te">తెలుగు</a></li>
+                            <li><a class="dropdown-item" href="?lang=hi">हिन्दी</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sensor Readings Content -->
+    <div class="container py-5" style="margin-top:80px;">
+
+        <div class="col-12 text-center"> <!-- Added wrapper for centering h3 -->
+            <h3 class="fw-bold" id="sensorReadingsHeading">{{ content['sensor_readings'] }}</h3>
+        </div>
+        <div class="row g-4" id="sensorData">
+            <div class="col-12 text-center">
+                <div class="loading-dots mx-auto">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <p class="mt-3">{{ content['loading'] }}</p>
+            </div>
+        </div>
+
+        <!-- Suggestions Section -->
+        <div class="row g-4 mt-4" id="suggestionsDiv">
+            <div class="col-12 text-center">
+                <h3 class="fw-bold" id="suggestionsHeading">{{ content['suggestions'] }}</h3>
+                <div class="row g-4" id="suggestionCards">
+                    <div class="col-12 text-center">
+                        <div class="loading-dots mx-auto">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <p class="mt-3">{{ content['loading'] }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Prices Section -->
+        <div class="row g-4 mt-4" id="marketPricesDiv">
+            <div class="col-12 text-center">
+                <h3 class="fw-bold" id="marketPricesHeading">{{ content['market_prices'] }}</h3>
+                <div class="row" id="marketPriceCards">
+                    <!-- Dynamic crop price cards will be injected here -->
+                    <div class="col-12 text-center">
+                        <div class="loading-dots mx-auto">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <p class="mt-3" id="marketPriceLoading">{{ content['loading'] }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chat Modal -->
+    <div class="modal fade" id="aiChatModal" tabindex="-1" aria-labelledby="aiChatModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="aiChatModalLabel"><i class="bi bi-robot me-2"></i>{{ content['ask_ai'] }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="aiChatWindow">
+                        <div class="ai-message">
+                            <span class="message-bubble">{{ content['ai_greeting_initial'] }}</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" id="aiUserInput" class="form-control" placeholder="{{ content['ai_placeholder'] }}" aria-label="AI Query">
+                        <button class="btn btn-success" type="button" id="aiSendBtn">{{ content['send'] }}</button>
+                        <button class="btn btn-danger ms-2" type="button" id="microphoneBtn">
+                            <i class="bi bi-mic"></i>
+                        </button>
+                    </div>
+                    <div id="speechStatus" class="text-muted text-center small"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <i class="bi bi-seedling"></i>🌾CropSense
+        </div>
+        <div class="social-icons">
+          <a href="mailto:surekhapamulapati3@gmail.com"><i class="bi bi-envelope"></i></a>
+<a href="https://www.linkedin.com/in/surekhapamulaapti" target="_blank"><i class="bi bi-linkedin"></i></a>
+<a href="https://github.com/surekhapamulapati" target="_blank"><i class="bi bi-github"></i></a>
+
+        </div>
+        <div class="copyright">
+          &copy; 2025 CropSense | {{ content['footer'] }}
+        </div>
+      </div>
+    </div>
+  </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+        import { getDatabase, ref, query, orderByKey, limitToLast, onValue } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCsN59ibDB90COjjlknSIUninGTCd7T60c",
+            authDomain: "cropmonitor-f486a.firebaseapp.com",
+            databaseURL: "https://cropmonitor-f486a-default-rtdb.firebaseio.com",
+            projectId: "cropmonitor-f486a",
+            storageBucket: "cropmonitor-f486a.appspot.com",
+            messagingSenderId: "419152448371",
+            appId: "1:419152448371:web:b7f73290890bdc8c5ed306",
+            measurementId: "G-EQYNRBS1EF"
+        };
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Multi-language suggestions with translations
+        const multiSuggestions = {
+            'Fresh': {
+                'Actions': [
+                    {'en':'Monitor regularly', 'te':'నియమితంగా పర్యవేక్షించండి', 'hi':'नियमित निगरानी करें'},
+                    {'en':'Maintain storage', 'te':'స్టోరేజ్‌ను నిల్వ చేయండి', 'hi':'भंडारण बनाए रखें'},
+                    {'en':'Ensure good ventilation', 'te':'మంచి గాలిరహిత వాతావరణాన్ని నిర్ధారించండి', 'hi':'अच्छी वेंटिलेशन सुनिश्चित करें'},
+                    {'en':'Avoid direct sunlight', 'te':'నేరుగా సూర్యకాంతి నుంచి దూరంగా ఉంచండి', 'hi':'प्रत्यक्ष सूर्यप्रकाश से बचें'},
+                    {'en':'Keep humidity stable', 'te':'తేమ స్థిరంగా ఉంచండి', 'hi':'नमी स्थिर रखें'}
+                ],
+                'Preventions': [
+                    {'en':'Check sensors daily', 'te':'ప్రతి రోజు సెన్సార్లను తనిఖీ చేయండి', 'hi':'सेंसर रोज़ जांचें'},
+                    {'en':'Separate fresh from moderate crops', 'te':'తాజా మరియు మోస్తరు పంటలను వేరు చేయండి', 'hi':'ताज़ी और मध्यम फसलों को अलग करें'},
+                    {'en':'Avoid water contact', 'te':'నీటి సంపర్కం నివారించండి', 'hi':'पानी के संपर्क से बचें'},
+                    {'en':'Regularly inspect packaging', 'te':'ప్యాకేజింగ్‌ను పునరావృతంగా తనిఖీ చేయండి', 'hi':'पैकेजिंग की नियमित जांच करें'},
+                    {'en':'Rotate stock', 'te':'స్టాక్‌ను తిరగండి', 'hi':'स्टॉक को घुमाएं'}
+                ],
+                'Tips': [
+                    {'en':'Harvest early in morning', 'te':'ప్రతిరోజు ఉదయం తొలగించండి', 'hi':'सुबह जल्दी कटाई करें'},
+                    {'en':'Use breathable bags', 'te':'శ్వాస తీసుకునే బ్యాగ్‌లను ఉపయోగించండి', 'hi':'सांस लेने वाले बैग का उपयोग करें'},
+                    {'en':'Keep area clean', 'te':'ప్రాంతాన్ని శుభ్రంగా ఉంచండి', 'hi':'क्षेत्र को साफ रखें'},
+                    {'en':'Use pest repellents', 'te':'పురుగు నివారకాలు ఉపయోగించండి', 'hi':'कीट निवारक का उपयोग करें'},
+                    {'en':'Do not overstack', 'te':'మించిపెట్టకండి', 'hi':'अत्यधिक ढेर न लगाएँ'}
+                ]
+            },
+            'Moderate': {
+                'Actions': [
+                    {'en':'Adjust storage conditions', 'te':'స్టోరేజ్ పరిస్థితులను సరిచేయండి', 'hi':'भंडारण स्थितियों को समायोजित करें'},
+                    {'en':'Check humidity and temperature', 'te':'తేమ మరియు ఉష్ణోగ్రతను తనిఖీ చేయండి', 'hi':'नमी और तापमान जांचें'},
+                    {'en':'Consider faster processing', 'te':'వేగంగా ప్రాసెసింగ్ గురించి ఆలోచించండి', 'hi':'तेज़ प्रक्रिया पर विचार करें'},
+                    {'en':'Separate from fresh crops', 'te':'తాజా పంటల నుండి వేరు చేయండి', 'hi':'ताज़ी फसलों से अलग करें'},
+                    {'en':'Inspect for early spoilage', 'te':'ముందే పాడైనదా తనిఖీ చేయండి', 'hi':'प्रारंभिक खराबी के लिए निरीक्षण करें'}
+                ],
+                'Preventions': [
+                    {'en':'Keep moderate crops away from high moisture', 'te':'మోస్తరు పంటలను అధిక తేమ నుండి దూరంగా ఉంచండి', 'hi':'मध्यम फसल को उच्च नमी से दूर रखें'},
+                    {'en':'Use ventilated storage', 'te':'గాలిమార్గం ఉన్న స్టోరేజ్ ఉపయోగించండి', 'hi':'वेंटिलेटेड भंडारण का उपयोग करें'},
+                    {'en':'Clean storage regularly', 'te':'స్టోరేజ్‌ను নিয়మితంగా శుభ్రం చేయండి', 'hi':'भंडारण को नियमित रूप से साफ़ करें'},
+                    {'en':'Avoid direct sunlight', 'te':'నేరుగా సూర్యకాంతి నుంచి దూరంగా ఉంచండి', 'hi':'प्रत्यक्ष सूर्यप्रकाश से बचें'},
+                    {'en':'Monitor temperature fluctuations', 'te':'ఉష్ణోగ్రత మార్పులను పర్యవేక్షించండి', 'hi':'तापमान में उतार-चढ़ाव पर ध्यान दें'}
+                ],
+                'Tips': [
+                    {'en':'Sell sooner than fresh crops', 'te':'తాజా పంటల కంటే తొందరగా అమ్మండి', 'hi':'ताज़ी फसलों की तुलना में जल्दी बेचें'},
+                    {'en':'Monitor for fungal growth', 'te':'ఫంగల్ వృద్ధిని పర్యవేక్షించండి', 'hi':'फंगल वृद्धि की निगरानी करें'},
+                    {'en':'Reduce stacking', 'te':'స్టాకింగ్ తగ్గించండి', 'hi':'स्टैकिंग कम करें'},
+                    {'en':'Use humidity absorbers', 'te':'తేమ శోషకాలను ఉపయోగించండి', 'hi':'ह्यूमिडिटी एब्जॉर्बर का उपयोग करें'},
+                    {'en':'Label batches clearly', 'te':'బ్యాచ్‌లను స్పష్టంగా లేబుల్ చేయండి', 'hi':'बैच को स्पष्ट रूप से लेबल करें'}
+                ]
+            },
+            'Spoiled': {
+                'Actions': [
+                    {'en':'Dispose or process immediately', 'te':'తక్షణమే విసర్జించండి లేదా ప్రాసెస్ చేయండి', 'hi':'तुरंत निपटाएं या संसाधित करें'},
+                    {'en':'Avoid contamination', 'te':'మలినకరణ నివారించండి', 'hi':'संक्रमण से बचें'},
+                    {'en':'Clean storage area thoroughly', 'te':'స్టోరేజ్ ప్రాంతాన్ని పూర్తిగా శుభ్రం చేయండి', 'hi':'भंडारण क्षेत्र को अच्छी तरह साफ़ करें'},
+                    {'en':'Use protective gloves', 'te':'ప్రొటెక్టివ్ గ్లోవ్స్ ఉపయోగించండి', 'hi':'संरक्षणात्मक दस्ताने पहनें'},
+                    {'en':'Check surrounding crops for infection', 'te':'పక్కన ఉన్న పంటలపై ఇన్ఫెక్షన్ తనిఖీ చేయండి', 'hi':'आसपास की फसलों में संक्रमण जांचें'}
+                ],
+                'Preventions': [
+                    {'en':'Do not store with fresh crops', 'te':'తాజా పంటలతో నిల్వ చేయకండి', 'hi':'ताज़ी फसलों के साथ स्टोर न करें'},
+                    {'en':'Regularly sanitize storage', 'te':'నియమితంగా స్టోరేజ్‌ను శుభ్రం చేయండి', 'hi':'भंडारण को नियमित रूप से सैनिटाइज करें'},
+                    {'en':'Monitor humidity', 'te':'తేమను పర్యవేక్షించండి', 'hi':'नमी की निगरानी करें'},
+                    {'en':'Remove infected batches promptly', 'te':'ఇన్ఫెక్టెడ్ బ్యాచ్‌లను వెంటనే తొలగించండి', 'hi':'संक्रमित बैच को तुरंत निकालें'},
+                    {'en':'Use fungicides if safe', 'te':'సురక్షితమైతే ఫంగిసైడ్స్ ఉపయోగించండి', 'hi':'सुरक्षित होने पर फंगिसाइड का उपयोग करें'}
+                ],
+                'Tips': [
+                    {'en':'Document spoiled crops', 'te':'పాడైన పంటలను డాక్యుమెంట్ చేయండి', 'hi':'खराब फसलों का दस्तावेज़ बनाएं'},
+                    {'en':'Avoid resale', 'te':'మళ్లీ అమ్మకానికి దూరంగా ఉంచండి', 'hi':'पुनर्विक्रय से बचें'},
+                    {'en':'Compost if possible', 'te':'సాధ్యమైతే కంపోస్ట్ చేయండి', 'hi':'यदि संभव हो तो कंपोस्ट करें'},
+                    {'en':'Maintain hygiene', 'te':'హైజీన్ కాపాడండి', 'hi':'स्वच्छता बनाए रखें'},
+                    {'en':'Train staff on handling spoiled crops', 'te':'పాడైన పంటల నిర్వహణపై సిబ్బందిని శిక్షణ ఇవ్వండి', 'hi':'खराब फसलों के प्रबंधन पर स्टाफ को प्रशिक्षित करें'}
+                ]
+            },
+            'No crop detected': {
+                'Actions': [
+                    {'en':'Place crop for reading', 'te':'చదవడానికి పంట ఉంచండి', 'hi':'पढ़ने के लिए फसल रखें'},
+                    {'en':'Ensure sensor is working', 'te':'సెన్సార్ పని చేస్తున్నదా అని నిర్ధారించండి', 'hi':'सुनिश्चित करें कि सेंसर काम कर रहा है'},
+                    {'en':'Check baseline calibration', 'te':'బేస్‌లైన్ క్యాలిబ్రేషన్ తనిఖీ చేయండి', 'hi':'बेसलाइन कैलिब्रेशन जांचें'},
+                    {'en':'Clean sensor area', 'te':'సెన్సార్ ప్రాంతాన్ని శుభ్రం చేయండి', 'hi':'सेंसर क्षेत्र साफ़ करें'},
+                    {'en':'Wait for sensor to stabilize', 'te':'సెన్సార్ స్థిరపడేవరకు వేచి ఉండండి', 'hi':'सेंसर को स्थिर होने दें'}
+                ],
+                'Preventions': [
+                    {'en':'Check sensor connectivity', 'te':'సెన్సార్ కనెక్టివిటీని తనిఖీ చేయండి', 'hi':'सेंसर कनेक्टिविटी जांचें'},
+                    {'en':'Verify power supply', 'te':'పవర్ సప్లైని ధృవీకరించండి', 'hi':'पावर सप्लाई सत्यापित करें'},
+                    {'en':'Calibrate regularly', 'te':'నియమితంగా క్యాలిబ్రేట్ చేయండి', 'hi':'नियमित रूप से कैलिब्रेट करें'},
+                    {'en':'Avoid physical obstruction', 'te':'భౌతిక అవరోధం నివారించండి', 'hi':'भौतिक अवरोध से बचें'},
+                    {'en':'Clean sensors weekly', 'te':'సెన్సార్లను వారానికి ఒకసారి శుభ్రం చేయండి', 'hi':'सेंसर को साप्ताहिक साफ़ करें'}
+                ],
+                'Tips': [
+                    {'en':'Keep sensors dry', 'te':'సెన్సార్లను పొడిగా ఉంచండి', 'hi':'सेंसर को सूखा रखें'},
+                    {'en':'Store crops nearby', 'te':'పంటలను దగ్గరలో నిల్వ చేయండి', 'hi':'फसल को पास में रखें'},
+                    {'en':'Document readings', 'te':'చదవులను డాక్యుమెంట్ చేయండి', 'hi':'पढ़ाई का दस्तावेज़ बनाएं'},
+                    {'en':'Schedule regular checks', 'te':'నియమిత తనిఖీలను షెడ్యూల్ చేయండి', 'hi':'नियमित जांच निर्धारित करें'},
+                    {'en':'Maintain logbook', 'te':'లాగ్‌బుక్ నిర్వహించండి', 'hi':'लॉगबुक बनाए रखें'}
+                ]
+            }
+        };
+
+        // Categories
+        const suggestionCategories = ['Actions','Preventions','Tips'];
+
+        // Multi-language headings
+        const suggestionHeadings = {'en':'Suggestions','te':'సూచనలు','hi':'सुझाव'};
+        const marketPriceHeadings = {'en':'Market Prices','te':'మార్కెట్ ధరలు','hi':'बाजार मूल्य'};
+        const sensorReadingsHeading = {'en':'Sensor Readings', 'te':'సెన్సార్ రీడింగ్‌లు', 'hi':'सेंसर रीडिंग'}; // New heading
+        const aiGreetingInitial = {
+            'en': 'Hello! How can I assist you with your crop monitoring today?',
+            'te': 'నమస్కారం! ఈరోజు మీ పంట పర్యవేక్షణలో నేను మీకు ఎలా సహాయపడగలను?',
+            'hi': 'नमस्ते! मैं आज आपकी फसल की निगरानी में कैसे मदद कर सकता हूँ?'
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const lang = urlParams.get('lang') || 'en';
+        document.getElementById('suggestionsHeading').textContent = suggestionHeadings[lang] || suggestionHeadings['en'];
+        document.getElementById('marketPricesHeading').textContent = marketPriceHeadings[lang] || marketPriceHeadings['en'];
+        document.getElementById('sensorReadingsHeading').textContent = sensorReadingsHeading[lang] || sensorReadingsHeading['en']; // Set new heading
+        document.querySelector('#aiChatWindow .ai-message .message-bubble').textContent = aiGreetingInitial[lang] || aiGreetingInitial['en'];
+
+        let currentCropStatus = 'No crop detected';
+
+        // Language map for headings inside cards
+        const langMap = {
+            'Actions': {'en':'Actions','te':'కార్యాలు','hi':'क्रियाएँ'},
+            'Preventions': {'en':'Preventions','te':'తదుపరి చర్యలు','hi':'रोकथाम'},
+            'Tips': {'en':'Tips','te':'సూచనలు','hi':'टिप्स'}
+        };
+
+        // Update suggestions cards in 3 languages
+        // Update suggestions cards
+
+// Update suggestions cards in 3 languages
+// Update suggestions cards based on selected language
+function updateSuggestions(status){
+    const suggestionCardsDiv = document.getElementById('suggestionCards');
+    suggestionCardsDiv.innerHTML = '';
+    if(!multiSuggestions[status]) status = 'No crop detected';
+
+    suggestionCategories.forEach(category=>{
+        const col = document.createElement('div');
+        col.className = 'col-md-4';
+        const card = document.createElement('div');
+        card.className = `suggestion-card suggestion-${status.toLowerCase().replace(/ /g,'')}`;
+
+        // Set the card title in selected language
+        const title = document.createElement('h5');
+        title.textContent = langMap[category][lang] || langMap[category]['en'];
+        card.appendChild(title);
+
+        const ul = document.createElement('ul');
+        const items = multiSuggestions[status][category];
+        items.forEach(item=>{
+            const li = document.createElement('li');
+            li.textContent = item[lang] || item['en']; // Show text only in selected language
+            ul.appendChild(li);
+        });
+
+        card.appendChild(ul);
+        col.appendChild(card);
+        suggestionCardsDiv.appendChild(col);
+    });
+}
+
+        // Function to fetch and display market prices (new)
+       async function fetchMarketPrices(status, cropType = 'default') {
+    try {
+        const response = await fetch('/api/market_prices', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ lang: lang, status: status, crop_type: cropType }),
+        });
+        const data = await response.json();
+        const marketPriceCards = document.getElementById('marketPriceCards');
+        marketPriceCards.innerHTML = ''; // Clear old cards
+
+        if (data && data.prices) {
+            for (const [crop, price] of Object.entries(data.prices)) {
+                const col = document.createElement('div');
+                col.className = 'col-md-4 col-lg-3';
+                const card = document.createElement('div');
+                card.className = `market-card ${status.toLowerCase()}`;
+                card.innerHTML = `
+                    <h5>${crop.charAt(0).toUpperCase() + crop.slice(1)}</h5>
+                    <p>${price} (${status})</p>
+                `;
+                col.appendChild(card);
+                marketPriceCards.appendChild(col);
+            }
+        } else {
+            marketPriceCards.innerHTML = `<div class="col-12 text-center"><p>{{ content['not_available'] }}</p></div>`;
+        }
+    } catch (error) {
+        console.error("Error fetching market prices:", error);
+        marketPriceCards.innerHTML = `<div class="col-12 text-center"><p>{{ content['error_fetching_prices'] }}</p></div>`;
+    }
+}
+
+        // Firebase sensor data
+        const sensorRef = query(ref(database,'sensor_data'),orderByKey(),limitToLast(1));
+        onValue(sensorRef,(snapshot)=>{
+            const sensorDataDiv=document.getElementById('sensorData');
+            sensorDataDiv.innerHTML='';
+            if(snapshot.exists()){
+                snapshot.forEach((child)=>{
+                    const data=child.val();
+                    currentCropStatus = data.status; // Update global status
+
+                    const cards=[
+                        {label:'{{ content["temperature"] }}', value:`${data.temperature} °C`, icon:'🌡'},
+                        {label:'{{ content["humidity"] }}', value:`${data.humidity} %`, icon:'💧'},
+                        {label:'{{ content["mq135"] }}', value:data.mq135, icon:'🧪'},
+                        {label:'{{ content["status"] }}', value:data.status, icon:'🌱'},
+                        {label:'{{ content["freshness"] }}', value:data.freshness?data.freshness+'%':'{{ content["not_available"] }}', icon:'⚡'}
+                    ];
+                    cards.forEach(card => {
+    const col = document.createElement('div');
+    col.className = 'col-md-6 col-lg-4';
+
+    // Determine text color for status only
+    let valueColor = '';
+    if (card.label === '{{ content["status"] }}') {
+        switch(card.value.toLowerCase()) {
+            case 'fresh':
+                valueColor = 'green';
+                break;
+            case 'moderate':
+                valueColor = '#ffc107'; // yellow
+                break;
+            case 'spoiled':
+                valueColor = 'red';
+                break;
+            default:
+                valueColor = 'gray'; // no crop detected
+        }
+    }
+
+    col.innerHTML = `
+        <div class="card text-center shadow-lg p-4 h-100">
+            <h3 class="card-title">${card.icon} ${card.label}</h3>
+            <p class="display-5 fw-bold mt-3" style="color:${valueColor || '#212529'}">${card.value}</p>
+        </div>
+    `;
+    sensorDataDiv.appendChild(col);
+});
+
+                    updateSuggestions(data.status);
+                    fetchMarketPrices(data.status); // Fetch market prices based on current status
+                });
+            } else {
+                sensorDataDiv.innerHTML=`<div class="col-12 text-center"><p>{{ content['not_available'] }}</p></div>`;
+                updateSuggestions('No crop detected');
+                fetchMarketPrices('No crop detected'); // Fetch market prices for no crop
+            }
+        });
+
+
+        // --- AI Chat Modal Logic (new) ---
+        const aiUserInput = document.getElementById('aiUserInput');
+        const aiSendBtn = document.getElementById('aiSendBtn');
+        const aiChatWindow = document.getElementById('aiChatWindow');
+        const microphoneBtn = document.getElementById('microphoneBtn');
+        const speechStatus = document.getElementById('speechStatus');
+
+        // Function to add messages to the chat window
+        function addMessageToChat(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add(sender + '-message');
+            const messageBubble = document.createElement('span');
+            messageBubble.classList.add('message-bubble');
+            messageBubble.textContent = message;
+            messageDiv.appendChild(messageBubble);
+            aiChatWindow.appendChild(messageDiv);
+            aiChatWindow.scrollTop = aiChatWindow.scrollHeight; // Auto-scroll to bottom
+        }
+
+        // Text-to-Speech function
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang === 'te' ? 'te-IN' : (lang === 'hi' ? 'hi-IN' : 'en-US'); // Set language
+                window.speechSynthesis.speak(utterance);
+            } else {
+                console.warn("Speech synthesis not supported in this browser.");
+            }
+        }
+
+        // Send AI query
+        async function sendAiQuery() {
+            const query = aiUserInput.value.trim();
+            if (!query) return;
+
+            addMessageToChat(query, 'user');
+            aiUserInput.value = '';
+
+            try {
+                const response = await fetch('/api/ai_query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: query, lang: lang, status: currentCropStatus }), // Pass current status
+                });
+                const data = await response.json();
+                if (data && data.response) {
+                    addMessageToChat(data.response, 'ai');
+                    speakText(data.response); // Speak the AI response
+                } else {
+                    addMessageToChat("{{ content['ai_error_response'] }}", 'ai');
+                    speakText("{{ content['ai_error_response'] }}");
+                }
+            } catch (error) {
+                console.error("Error fetching AI response:", error);
+                addMessageToChat("{{ content['ai_error_network'] }}", 'ai');
+                speakText("{{ content['ai_error_network'] }}");
+            }
+        }
+
+        aiSendBtn.addEventListener('click', sendAiQuery);
+        aiUserInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendAiQuery();
+            }
+        });
+
+        // Speech Recognition (Speech-to-Text)
+        if ('webkitSpeechRecognition' in window) {
+            const recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = lang === 'te' ? 'te-IN' : (lang === 'hi' ? 'hi-IN' : 'en-US'); // Set language for STT
+
+            microphoneBtn.addEventListener('click', () => {
+                if (microphoneBtn.classList.contains('active')) {
+                    recognition.stop();
+                } else {
+                    recognition.start();
+                    microphoneBtn.classList.add('active');
+                    speechStatus.textContent = "{{ content['ai_listening'] }}";
+                }
+            });
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                aiUserInput.value = transcript;
+                speechStatus.textContent = "{{ content['ai_recognizing'] }}";
+                sendAiQuery(); // Automatically send the query after recognition
+            };
+
+            recognition.onend = () => {
+                microphoneBtn.classList.remove('active');
+                speechStatus.textContent = "";
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error:", event.error);
+                speechStatus.textContent = "{{ content['ai_speech_error'] }}: " + event.error;
+                microphoneBtn.classList.remove('active');
+            };
+        } else {
+            microphoneBtn.style.display = 'none'; // Hide microphone button if not supported
+            speechStatus.textContent = "{{ content['ai_speech_not_supported'] }}";
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

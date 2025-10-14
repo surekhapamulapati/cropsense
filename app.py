@@ -15,7 +15,7 @@ def load_language(lang):
 
 # Market prices for crops
 MARKET_PRICES = {
-    'en': {
+   'en': {
         'rice': {'fresh': '₹40/kg', 'moderate': '₹25/kg', 'spoiled': '₹8/kg'},
         'wheat': {'fresh': '₹35/kg', 'moderate': '₹20/kg', 'spoiled': '₹7/kg'},
         'corn': {'fresh': '₹30/kg', 'moderate': '₹18/kg', 'spoiled': '₹5/kg'},
@@ -28,31 +28,33 @@ MARKET_PRICES = {
         'cauliflower': {'fresh': '₹35/kg', 'moderate': '₹22/kg', 'spoiled': '₹8/kg'},
         'default': {'fresh': '₹30/kg', 'moderate': '₹18/kg', 'spoiled': '₹6/kg'}
     },
-    'te': {
-        'rice': {'fresh': '₹40/kg', 'moderate': '₹25/kg', 'spoiled': '₹8/kg'},
-        'wheat': {'fresh': '₹35/kg', 'moderate': '₹20/kg', 'spoiled': '₹7/kg'},
-        'corn': {'fresh': '₹30/kg', 'moderate': '₹18/kg', 'spoiled': '₹5/kg'},
-        'potato': {'fresh': '₹25/kg', 'moderate': '₹15/kg', 'spoiled': '₹5/kg'},
-        'tomato': {'fresh': '₹30/kg', 'moderate': '₹20/kg', 'spoiled': '₹7/kg'},
-        'onion': {'fresh': '₹20/kg', 'moderate': '₹12/kg', 'spoiled': '₹4/kg'},
-        'cabbage': {'fresh': '₹18/kg', 'moderate': '₹12/kg', 'spoiled': '₹5/kg'},
-        'carrot': {'fresh': '₹28/kg', 'moderate': '₹18/kg', 'spoiled': '₹6/kg'},
-        'brinjal': {'fresh': '₹22/kg', 'moderate': '₹14/kg', 'spoiled': '₹5/kg'},
-        'cauliflower': {'fresh': '₹35/kg', 'moderate': '₹22/kg', 'spoiled': '₹8/kg'},
-        'default': {'fresh': '₹30/kg', 'moderate': '₹18/kg', 'spoiled': '₹6/kg'}
+
+    'te': {  # Telugu
+        'బియ్యం': {'fresh': '₹40/కిలో', 'moderate': '₹25/కిలో', 'spoiled': '₹8/కిలో'},
+        'గోధుమలు': {'fresh': '₹35/కిలో', 'moderate': '₹20/కిలో', 'spoiled': '₹7/కిలో'},
+        'మొక్కజొన్న': {'fresh': '₹30/కిలో', 'moderate': '₹18/కిలో', 'spoiled': '₹5/కిలో'},
+        'బంగాళాదుంప': {'fresh': '₹25/కిలో', 'moderate': '₹15/కిలో', 'spoiled': '₹5/కిలో'},
+        'టమోటా': {'fresh': '₹30/కిలో', 'moderate': '₹20/కిలో', 'spoiled': '₹7/కిలో'},
+        'ఉల్లిపాయ': {'fresh': '₹20/కిలో', 'moderate': '₹12/కిలో', 'spoiled': '₹4/కిలో'},
+        'క్యాబేజీ': {'fresh': '₹18/కిలో', 'moderate': '₹12/కిలో', 'spoiled': '₹5/కిలో'},
+        'కారెట్': {'fresh': '₹28/కిలో', 'moderate': '₹18/కిలో', 'spoiled': '₹6/కిలో'},
+        'వంకాయ': {'fresh': '₹22/కిలో', 'moderate': '₹14/కిలో', 'spoiled': '₹5/కిలో'},
+        'కాలీఫ్లవర్': {'fresh': '₹35/కిలో', 'moderate': '₹22/కిలో', 'spoiled': '₹8/కిలో'},
+        'డిఫాల్ట్': {'fresh': '₹30/కిలో', 'moderate': '₹18/కిలో', 'spoiled': '₹6/కిలో'}
     },
-    'hi': {
-        'rice': {'fresh': '₹40/kg', 'moderate': '₹25/kg', 'spoiled': '₹8/kg'},
-        'wheat': {'fresh': '₹35/kg', 'moderate': '₹20/kg', 'spoiled': '₹7/kg'},
-        'corn': {'fresh': '₹30/kg', 'moderate': '₹18/kg', 'spoiled': '₹5/kg'},
-        'potato': {'fresh': '₹25/kg', 'moderate': '₹15/kg', 'spoiled': '₹5/kg'},
-        'tomato': {'fresh': '₹30/kg', 'moderate': '₹20/kg', 'spoiled': '₹7/kg'},
-        'onion': {'fresh': '₹20/kg', 'moderate': '₹12/kg', 'spoiled': '₹4/kg'},
-        'cabbage': {'fresh': '₹18/kg', 'moderate': '₹12/kg', 'spoiled': '₹5/kg'},
-        'carrot': {'fresh': '₹28/kg', 'moderate': '₹18/kg', 'spoiled': '₹6/kg'},
-        'brinjal': {'fresh': '₹22/kg', 'moderate': '₹14/kg', 'spoiled': '₹5/kg'},
-        'cauliflower': {'fresh': '₹35/kg', 'moderate': '₹22/kg', 'spoiled': '₹8/kg'},
-        'default': {'fresh': '₹30/kg', 'moderate': '₹18/kg', 'spoiled': '₹6/kg'}
+
+    'hi': {  # Hindi
+        'चावल': {'fresh': '₹40/किलो', 'moderate': '₹25/किलो', 'spoiled': '₹8/किलो'},
+        'गेहूं': {'fresh': '₹35/किलो', 'moderate': '₹20/किलो', 'spoiled': '₹7/किलो'},
+        'मक्का': {'fresh': '₹30/किलो', 'moderate': '₹18/किलो', 'spoiled': '₹5/किलो'},
+        'आलू': {'fresh': '₹25/किलो', 'moderate': '₹15/किलो', 'spoiled': '₹5/किलो'},
+        'टमाटर': {'fresh': '₹30/किलो', 'moderate': '₹20/किलो', 'spoiled': '₹7/किलो'},
+        'प्याज': {'fresh': '₹20/किलो', 'moderate': '₹12/किलो', 'spoiled': '₹4/किलो'},
+        'पत्तागोभी': {'fresh': '₹18/किलो', 'moderate': '₹12/किलो', 'spoiled': '₹5/किलो'},
+        'गाजर': {'fresh': '₹28/किलो', 'moderate': '₹18/किलो', 'spoiled': '₹6/किलो'},
+        'बैंगन': {'fresh': '₹22/किलो', 'moderate': '₹14/किलो', 'spoiled': '₹5/किलो'},
+        'फूलगोभी': {'fresh': '₹35/किलो', 'moderate': '₹22/किलो', 'spoiled': '₹8/किलो'},
+        'डिफ़ॉल्ट': {'fresh': '₹30/किलो', 'moderate': '₹18/किलो', 'spoiled': '₹6/किलो'}
     }
 }
 

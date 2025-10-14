@@ -181,7 +181,8 @@
 
         /* Status-based backgrounds */
         .suggestion-fresh {
-            background-color: #28a745;
+            background-color: #0e551e;
+            color:white;
         }
         .suggestion-fresh:before {
             background: rgba(255,255,255,0.1);
@@ -197,10 +198,21 @@
 
         .suggestion-spoiled {
             background-color: #dc3545;
+            color:white;
         }
         .suggestion-spoiled:before {
             background: rgba(255,255,255,0.1);
         }
+        .suggestion-nocropdetected {
+    background-color: #e9ecef;
+    color: #212529;
+}
+.suggestion-nocropdetected:before {
+    background: rgba(0,0,0,0.1);
+}
+.suggestion-nocropdetected h5 {
+    color: #212529;
+}
 
         /* Market Cards */
         .market-card {
@@ -236,7 +248,7 @@
 
         /* Lightened card backgrounds, same general color family */
         .market-card.fresh {
-            background-color: #7adc86;
+            background-color: #4d7b52;
             color: #155724;
         }
         .market-card.fresh:before {
